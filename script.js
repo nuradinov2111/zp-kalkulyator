@@ -1,22 +1,22 @@
 const salaryInput = document.getElementById('salary-input');
 const inputLabel = document.getElementById('input-label');
 const modeBtns = document.querySelectorAll('.mode-btn');
-const taxBtns = document.querySelectorAll('.tax-btn');
 
 const resultGross = document.getElementById('result-gross');
-const resultNdfl = document.getElementById('result-ndfl');
+const resultSfEmployee = document.getElementById('result-sf-employee');
+const resultIncomeTax = document.getElementById('result-income-tax');
+const resultTotalDeductions = document.getElementById('result-total-deductions');
 const resultNet = document.getElementById('result-net');
-const resultOps = document.getElementById('result-ops');
-const resultOms = document.getElementById('result-oms');
-const resultOss = document.getElementById('result-oss');
-const resultTotalContributions = document.getElementById('result-total-contributions');
+const resultPension = document.getElementById('result-pension');
+const resultFoms = document.getElementById('result-foms');
+const resultFot = document.getElementById('result-fot');
+const resultTotalEmployer = document.getElementById('result-total-employer');
 const resultTotalCost = document.getElementById('result-total-cost');
 
 let mode = 'gross';
-let taxRate = 13;
 
 function formatMoney(value) {
-    return Math.round(value).toLocaleString('ru-RU') + ' \u20BD';
+    return Math.round(value).toLocaleString('ru-RU') + ' сом';
 }
 
 function parseInput(value) {
@@ -25,31 +25,38 @@ function parseInput(value) {
 
 function calculate() {
     const inputValue = parseInput(salaryInput.value);
-    let gross, ndfl, net;
+    let gross, sfEmployee, incomeTax, net;
 
     if (mode === 'gross') {
         gross = inputValue;
-        ndfl = gross * taxRate / 100;
-        net = gross - ndfl;
     } else {
+        // net = gross * 0.9 * 0.9 = gross * 0.81
         net = inputValue;
-        gross = net / (1 - taxRate / 100);
-        ndfl = gross - net;
+        gross = net / 0.81;
     }
 
-    const ops = gross * 0.22;
-    const oms = gross * 0.051;
-    const oss = gross * 0.029;
-    const totalContributions = ops + oms + oss;
-    const totalCost = gross + totalContributions;
+    // Удержания из зарплаты работника
+    sfEmployee = gross * 0.10;                      // Взнос работника в Соцфонд: 10%
+    incomeTax = (gross - sfEmployee) * 0.10;         // Подоходный налог: 10% от (оклад - взнос в СФ)
+    const totalDeductions = sfEmployee + incomeTax;
+    net = gross - totalDeductions;
+
+    // Взносы работодателя в Соцфонд: 17.25%
+    const pension = gross * 0.15;     // Пенсионный фонд: 15%
+    const foms = gross * 0.02;        // ФОМС: 2%
+    const fot = gross * 0.0025;       // ФОТ: 0.25%
+    const totalEmployer = pension + foms + fot;
+    const totalCost = gross + totalEmployer;
 
     resultGross.textContent = formatMoney(gross);
-    resultNdfl.textContent = formatMoney(ndfl);
+    resultSfEmployee.textContent = formatMoney(sfEmployee);
+    resultIncomeTax.textContent = formatMoney(incomeTax);
+    resultTotalDeductions.textContent = formatMoney(totalDeductions);
     resultNet.textContent = formatMoney(net);
-    resultOps.textContent = formatMoney(ops);
-    resultOms.textContent = formatMoney(oms);
-    resultOss.textContent = formatMoney(oss);
-    resultTotalContributions.textContent = formatMoney(totalContributions);
+    resultPension.textContent = formatMoney(pension);
+    resultFoms.textContent = formatMoney(foms);
+    resultFot.textContent = formatMoney(fot);
+    resultTotalEmployer.textContent = formatMoney(totalEmployer);
     resultTotalCost.textContent = formatMoney(totalCost);
 }
 
@@ -60,20 +67,11 @@ modeBtns.forEach(btn => {
         mode = btn.dataset.mode;
 
         if (mode === 'gross') {
-            inputLabel.innerHTML = 'Оклад (до вычета НДФЛ), \u20BD';
+            inputLabel.textContent = 'Оклад (начисленная зарплата), сом';
         } else {
-            inputLabel.innerHTML = 'Сумма на руки (после НДФЛ), \u20BD';
+            inputLabel.textContent = 'Сумма на руки (после удержаний), сом';
         }
 
-        calculate();
-    });
-});
-
-taxBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        taxBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        taxRate = parseInt(btn.dataset.rate);
         calculate();
     });
 });
