@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор зарплаты</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Калькулятор зарплаты</h1>
+        <p class="subtitle">Расчёт зарплаты, НДФЛ и взносов работодателя</p>
+
+        <div class="calc-mode">
+            <button class="mode-btn active" data-mode="gross">Оклад &rarr; На руки</button>
+            <button class="mode-btn" data-mode="net">На руки &rarr; Оклад</button>
+        </div>
+
+        <div class="input-group">
+            <label id="input-label" for="salary-input">Оклад (до вычета НДФЛ), &#8381;</label>
+            <input type="text" id="salary-input" placeholder="Введите сумму" autocomplete="off">
+        </div>
+
+        <div class="tax-rate-group">
+            <label for="tax-rate">Ставка НДФЛ</label>
+            <div class="tax-buttons">
+                <button class="tax-btn active" data-rate="13">13%</button>
+                <button class="tax-btn" data-rate="30">30%</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <div class="result-card">
+                <span class="result-label" id="result-gross-label">Оклад (gross)</span>
+                <span class="result-value" id="result-gross">0 &#8381;</span>
+            </div>
+            <div class="result-card highlight">
+                <span class="result-label">НДФЛ</span>
+                <span class="result-value" id="result-ndfl">0 &#8381;</span>
+            </div>
+            <div class="result-card">
+                <span class="result-label" id="result-net-label">На руки (net)</span>
+                <span class="result-value" id="result-net">0 &#8381;</span>
+            </div>
+
+            <h3 class="section-title">Взносы работодателя</h3>
+
+            <div class="result-card">
+                <span class="result-label">ОПС (22%)</span>
+                <span class="result-value" id="result-ops">0 &#8381;</span>
+            </div>
+            <div class="result-card">
+                <span class="result-label">ОМС (5.1%)</span>
+                <span class="result-value" id="result-oms">0 &#8381;</span>
+            </div>
+            <div class="result-card">
+                <span class="result-label">ОСС (2.9%)</span>
+                <span class="result-value" id="result-oss">0 &#8381;</span>
+            </div>
+            <div class="result-card total">
+                <span class="result-label">Итого взносы (30%)</span>
+                <span class="result-value" id="result-total-contributions">0 &#8381;</span>
+            </div>
+            <div class="result-card total">
+                <span class="result-label">Общие затраты работодателя</span>
+                <span class="result-value" id="result-total-cost">0 &#8381;</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
